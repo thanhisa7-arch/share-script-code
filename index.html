@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080b14"><title>ScriptHub — Code. Share. Connect.</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--bg:#080b14;--panel:#101727;--panel2:#151f32;--line:#26344d;--txt:#edf2ff;--muted:#9aa9c1;--blue:#718cff;--purple:#a477ff;--pink:#ff78a8;--green:#55d6a0;--red:#ff7187}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 12% -8%,#1b2851 0,transparent 38%),var(--bg);color:var(--txt);font:14px/1.55 Inter,system-ui,Arial,sans-serif}button,input,textarea,select{font:inherit}button{cursor:pointer}.hidden{display:none!important}.app{max-width:1200px;margin:auto;padding:18px 22px 50px}
+header{height:66px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid #ffffff10}.brand{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:900;letter-spacing:-.8px}.logo{width:39px;height:39px;border-radius:13px;background:linear-gradient(135deg,var(--blue),var(--purple));display:grid;place-items:center;box-shadow:0 8px 25px #718cff55}.brand em{font-style:normal;background:linear-gradient(90deg,#fff,#b9c6ff);color:transparent;background-clip:text}.head-actions{display:flex;align-items:center;gap:9px}.user-mini{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px}.avatar{width:34px;height:34px;border-radius:50%;object-fit:cover;background:#2a3956;border:1px solid #52668d;display:grid;place-items:center;font-weight:800;color:white}
+.btn{border:0;border-radius:11px;padding:10px 15px;background:linear-gradient(110deg,#647fff,#9c70ff);color:#fff;font-weight:750;box-shadow:0 7px 20px #647fff25}.btn:hover{filter:brightness(1.1)}.btn.ghost{background:#1b2940;border:1px solid var(--line);box-shadow:none}.btn.danger{background:#512638;border:1px solid #874054;box-shadow:none}.btn.small{padding:7px 10px;font-size:12px}.btn:disabled{opacity:.5;cursor:not-allowed}
+.hero{padding:38px 0 24px}.eyebrow{font-size:11px;letter-spacing:2px;font-weight:850;color:#aebdff}.hero h1{font-size:clamp(34px,6vw,58px);line-height:1.02;letter-spacing:-2.3px;margin:10px 0}.gradient{background:linear-gradient(90deg,#8fa7ff,#c29aff,#ff9ac0);color:transparent;background-clip:text}.hero p{max-width:620px;color:var(--muted);margin:12px 0 18px}.stats{display:flex;gap:22px;flex-wrap:wrap;color:var(--muted);font-size:12px}.stats b{color:#fff;font-size:15px}
+.nav{display:flex;gap:7px;overflow:auto;border-bottom:1px solid var(--line);padding:5px 0 13px;margin-bottom:18px}.nav button{white-space:nowrap;background:transparent;color:var(--muted);border:1px solid transparent;padding:8px 13px;border-radius:10px}.nav button.active{background:#202e4b;color:white;border-color:#465b8c}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}.field,.select,.area{width:100%;background:#0d1523;border:1px solid var(--line);color:var(--txt);padding:11px 13px;border-radius:11px;outline:none}.field:focus,.select:focus,.area:focus{border-color:var(--blue)}.search{flex:1;min-width:190px}.select.auto{width:auto}
+.sectionhead{display:flex;justify-content:space-between;align-items:center;margin:15px 0}.sectionhead h2{font-size:19px;margin:0}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card,.panel{background:linear-gradient(150deg,#141f32,#0e1625);border:1px solid var(--line);border-radius:16px;padding:16px;min-width:0;box-shadow:0 10px 28px #0002}.cardtop,.cardfoot{display:flex;align-items:center;justify-content:space-between;gap:9px}.tag{font-size:11px;color:#bdcaff;background:#25365a;border:1px solid #3d5283;padding:4px 9px;border-radius:99px}.card h3{font-size:18px;margin:12px 0 4px;overflow-wrap:anywhere}.desc{color:var(--muted);font-size:13px;min-height:38px;white-space:pre-wrap;overflow-wrap:anywhere}pre{background:#080e19;border:1px solid #26344b;border-radius:11px;padding:13px;overflow:auto;max-height:190px;color:#bfd4ff;font:12px/1.6 ui-monospace,Consolas,monospace}.actions{display:flex;gap:6px;flex-wrap:wrap}.action{border:1px solid var(--line);background:#1a263a;color:#d2def1;border-radius:9px;padding:7px 9px;font-size:12px}.action.liked{color:#ff91b3;border-color:#87435c;background:#321c2b}.author{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.empty{grid-column:1/-1;text-align:center;padding:40px 15px;border:1px dashed var(--line);border-radius:15px;color:var(--muted)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}.profile-head{display:flex;gap:14px;align-items:center}.profile-head .avatar{width:65px;height:65px;font-size:22px}.profile-meta h2{margin:0}.profile-meta p{margin:3px 0;color:var(--muted)}.statbox{background:#0d1625;border:1px solid var(--line);padding:12px;border-radius:12px}.statbox b{font-size:20px;display:block}.statbox span{font-size:12px;color:var(--muted)}
+.listrow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #26344d}.listrow:last-child{border:0}.rank{font-size:18px;font-weight:900;color:#aebfff;width:30px}.listleft{display:flex;align-items:center;gap:10px;min-width:0}.listtitle{min-width:0}.listtitle b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.listtitle small{color:var(--muted)}
+.notice{padding:12px;border:1px solid var(--line);border-radius:12px;background:#0d1625;margin-bottom:8px}.notice.unread{border-color:#617bcb;background:#182541}.notice p{margin:3px 0}.notice small{color:var(--muted)}
+.modal{position:fixed;inset:0;background:#02050dcc;display:none;align-items:center;justify-content:center;padding:15px;z-index:10}.modal.show{display:flex}.dialog{width:min(660px,100%);max-height:92vh;overflow:auto;background:#111b2c;border:1px solid #344663;border-radius:18px;padding:20px;box-shadow:0 25px 90px #000b}.dialog h2{margin:0 0 15px}.formgrid{display:grid;gap:11px}.formgrid label{display:grid;gap:5px;color:#bdc9dc;font-size:12px}.formrow{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}.divider{height:1px;background:var(--line);margin:14px 0}.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#243653;border:1px solid #5871a0;padding:10px 16px;border-radius:12px;z-index:30;display:none;max-width:90vw}
+footer{text-align:center;padding:35px 0 0;color:var(--muted);font-size:12px}
+@media(max-width:720px){.app{padding:12px 14px 35px}.grid,.two{grid-template-columns:1fr}.hero{padding-top:25px}.head-actions .user-mini span{display:none}.brand{font-size:19px}.btn{padding:9px 11px}.cardfoot{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div class="brand"><span class="logo">⌘</span><em>ScriptHub</em></div>
+ <div class="head-actions">
+  <div id="userMini" class="user-mini hidden"><img id="miniAvatar" class="avatar" alt=""><span id="miniName"></span></div>
+  <button id="authButton" class="btn" onclick="openAuth()">Đăng nhập</button>
+  <button id="logoutButton" class="btn ghost hidden" onclick="signOut()">Đăng xuất</button>
+ </div>
+</header>
+<section class="hero">
+ <div class="eyebrow">CODE · SHARE · CONNECT</div>
+ <h1>Chia sẻ script.<br><span class="gradient">Kết nối cộng đồng.</span></h1>
+ <p>Khám phá code hữu ích, chia sẻ dự án và trao đổi cùng cộng đồng lập trình. Tôn trọng tác giả và chỉ đăng nội dung bạn có quyền chia sẻ.</p>
+ <div class="stats"><span><b id="postCount">0</b> bài đăng</span><span><b id="likeCount">0</b> lượt thích</span><span><b id="commentCount">0</b> bình luận</span></div>
+</section>
+<nav class="nav" id="nav">
+ <button class="active" data-page="feed" onclick="goPage('feed',this)">⌂ Khám phá</button>
+ <button data-page="leaderboard" onclick="goPage('leaderboard',this)">♛ Bảng xếp hạng</button>
+ <button data-page="profile" onclick="goPage('profile',this)">◉ Hồ sơ</button>
+ <button data-page="notifications" onclick="goPage('notifications',this)">♧ Thông báo <span id="noticeBadge"></span></button>
+ <button data-page="admin" id="adminNav" class="hidden" onclick="goPage('admin',this)">⚙ Admin</button>
+</nav>
+<main id="page-feed">
+ <div class="toolbar"><input id="search" class="field search" placeholder="⌕ Tìm script, mô tả, tác giả..." oninput="renderFeed()"><select id="sort" class="select auto" onchange="renderFeed()"><option value="new">Mới nhất</option><option value="popular">Nhiều lượt thích</option></select><button class="btn" onclick="openScriptForm()">＋ Đăng script</button></div>
+ <div class="nav" id="categories" style="border:0;margin:0;padding:0 0 12px">
+  <button class="active" data-cat="Tất cả" onclick="setCategory(this)">Tất cả</button><button data-cat="Roblox" onclick="setCategory(this)">Roblox</button><button data-cat="Lua" onclick="setCategory(this)">Lua</button><button data-cat="HTML" onclick="setCategory(this)">HTML</button><button data-cat="JavaScript" onclick="setCategory(this)">JavaScript</button><button data-cat="Khác" onclick="setCategory(this)">Khác</button>
+ </div>
+ <div class="sectionhead"><h2>Khám phá script</h2><span class="muted" id="feedCount"></span></div><div class="grid" id="feedGrid"><div class="empty">Đang tải...</div></div>
+</main>
+<main id="page-leaderboard" class="hidden">
+ <div class="sectionhead"><h2>♛ Script nổi bật</h2><span class="muted">Xếp theo lượt thích</span></div><div class="panel" id="leaderboardBox"></div>
+</main>
+<main id="page-profile" class="hidden">
+ <div class="sectionhead"><h2>Hồ sơ cá nhân</h2><button class="btn small" onclick="openProfileEdit()">Chỉnh sửa hồ sơ</button></div>
+ <div id="profileBox" class="panel">Đăng nhập để xem hồ sơ.</div>
+ <div class="sectionhead"><h2>Script của tôi</h2></div><div class="grid" id="myScripts"></div>
+</main>
+<main id="page-notifications" class="hidden">
+ <div class="sectionhead"><h2>Thông báo</h2><button class="btn ghost small" onclick="markAllRead()">Đánh dấu đã đọc</button></div><div id="notificationsBox" class="panel">Đăng nhập để xem thông báo.</div>
+</main>
+<main id="page-admin" class="hidden">
+ <div class="sectionhead"><h2>⚙ Admin Dashboard</h2><span class="tag">Quản trị</span></div>
+ <div class="two" style="margin-bottom:14px"><div class="statbox"><b id="adminPosts">0</b><span>Tổng bài đăng</span></div><div class="statbox"><b id="adminReports">0</b><span>Báo cáo đang chờ</span></div></div>
+ <div class="sectionhead"><h2>Báo cáo cần xử lý</h2></div><div id="reportsBox" class="panel"></div>
+ <div class="sectionhead"><h2>Quản lý bài đăng</h2></div><div id="adminScripts" class="panel"></div>
+</main>
+<footer>ScriptHub · Built for creators · Chia sẻ có trách nhiệm.</footer>
+</div>
+
+<div class="modal" id="authModal"><div class="dialog">
+ <h2 id="authTitle">Đăng nhập ScriptHub</h2><form id="authForm" class="formgrid">
+ <label>Email<input class="field" type="email" name="email" required autocomplete="email" placeholder="you@example.com"></label>
+ <label>Mật khẩu<input class="field" type="password" name="password" required minlength="8" autocomplete="current-password" placeholder="Ít nhất 8 ký tự"></label>
+ <div id="signupFields" class="hidden formgrid"><label>Tên hiển thị<input class="field" name="username" maxlength="32" placeholder="Tên của bạn"></label></div>
+ <div class="formrow" style="justify-content:space-between"><button type="button" class="action" onclick="toggleAuthMode()" id="authToggle">Chưa có tài khoản? Đăng ký</button><button class="btn" id="authSubmit">Đăng nhập</button></div></form>
+ <div class="formrow"><button class="btn ghost" onclick="closeModal('authModal')">Đóng</button></div>
+</div></div>
+
+<div class="modal" id="scriptModal"><div class="dialog"><h2 id="scriptModalTitle">Đăng script mới</h2>
+<form id="scriptForm" class="formgrid">
+ <label>Tiêu đề<input class="field" name="title" required maxlength="90"></label>
+ <label>Danh mục<select class="select" name="category"><option>Roblox</option><option>Lua</option><option>HTML</option><option>JavaScript</option><option>Khác</option></select></label>
+ <label>Mô tả<textarea class="area" name="description" rows="2" maxlength="300"></textarea></label>
+ <label>Mã script<textarea class="area" name="code" rows="9" required maxlength="30000" placeholder="Dán code của bạn..."></textarea></label>
+ <div class="formrow"><button type="button" class="btn ghost" onclick="closeModal('scriptModal')">Hủy</button><button class="btn">Đăng bài</button></div>
+</form></div></div>
+
+<div class="modal" id="profileModal"><div class="dialog"><h2>Chỉnh sửa hồ sơ</h2><form id="profileForm" class="formgrid">
+ <label>Tên hiển thị<input class="field" name="username" maxlength="32" required></label>
+ <label>Giới thiệu<textarea class="area" name="bio" maxlength="240" rows="3"></textarea></label>
+ <label>URL ảnh đại diện (tuỳ chọn)<input class="field" name="avatar_url" type="url" placeholder="https://..."></label>
+ <div class="formrow"><button type="button" class="btn ghost" onclick="closeModal('profileModal')">Hủy</button><button class="btn">Lưu thay đổi</button></div>
+</form></div></div>
+
+<div class="modal" id="commentsModal"><div class="dialog"><h2 id="commentsTitle">Bình luận</h2><div id="commentsList"></div><div class="divider"></div>
+<form id="commentForm" class="formgrid"><input type="hidden" name="script_id"><label>Bình luận<textarea class="area" name="body" rows="3" maxlength="800" required placeholder="Viết bình luận..."></textarea></label><div class="formrow"><button type="button" class="btn ghost" onclick="closeModal('commentsModal')">Đóng</button><button class="btn">Gửi bình luận</button></div></form></div></div>
+<div class="modal" id="reportModal"><div class="dialog"><h2>Báo cáo bài đăng</h2><form id="reportForm" class="formgrid"><input type="hidden" name="script_id"><label>Lý do<select class="select" name="reason"><option>Spam hoặc quảng cáo</option><option>Nội dung gây hại</option><option>Vi phạm bản quyền</option><option>Thông tin sai lệch</option><option>Khác</option></select></label><label>Mô tả thêm<textarea class="area" name="details" maxlength="500" rows="3"></textarea></label><div class="formrow"><button type="button" class="btn ghost" onclick="closeModal('reportModal')">Hủy</button><button class="btn">Gửi báo cáo</button></div></form></div></div>
+<div id="toast" class="toast"></div>
+
+<script>
+/* CẤU HÌNH: điền Project URL và anon/public key của Supabase.
+   KHÔNG BAO GIỜ đặt service_role key trong HTML công khai. */
+const SUPABASE_URL="PASTE_SUPABASE_PROJECT_URL_HERE";
+const SUPABASE_ANON_KEY="PASTE_SUPABASE_ANON_KEY_HERE";
+const configured=SUPABASE_URL.startsWith("https://")&&!SUPABASE_ANON_KEY.includes("PASTE_");
+const db=configured?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY):null;
+let session=null, me=null, scripts=[], category="Tất cả", authMode="login", editingScript=null, noticeTimer=null;
+const $=id=>document.getElementById(id);
+function toast(s){$("toast").textContent=s;$("toast").style.display="block";clearTimeout(window.tt);window.tt=setTimeout(()=>$("toast").style.display="none",3000)}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function closeModal(id){$(id).classList.remove("show")}
+function initials(s){return (s||"?").trim().slice(0,1).toUpperCase()}
+function avatarMarkup(url,name){return url?`<img class="avatar" src="${esc(url)}" alt="" onerror="this.outerHTML='<span class=avatar>${esc(initials(name))}</span>'">`:`<span class="avatar">${esc(initials(name))}</span>`}
+function ago(v){let n=Math.max(0,Math.floor((Date.now()-new Date(v).getTime())/60000));return n<1?"vừa xong":n<60?n+" phút trước":n<1440?Math.floor(n/60)+" giờ trước":Math.floor(n/1440)+" ngày trước"}
+function goPage(page,btn){if(page!=="feed"&&!session){openAuth();toast("Đăng nhập để sử dụng tính năng này.");return}if(page==="admin"&&!me?.is_admin){toast("Bạn không có quyền quản trị.");return}
+ document.querySelectorAll("main[id^=page-]").forEach(x=>x.classList.add("hidden"));$("page-"+page).classList.remove("hidden");document.querySelectorAll("#nav button").forEach(x=>x.classList.remove("active"));if(btn)btn.classList.add("active");
+ if(page==="leaderboard")renderLeaderboard();if(page==="profile")renderProfile();if(page==="notifications")loadNotifications();if(page==="admin")loadAdmin();}
+function setCategory(btn){document.querySelectorAll("#categories button").forEach(x=>x.classList.remove("active"));btn.classList.add("active");category=btn.dataset.cat;renderFeed()}
+function openAuth(){authMode="login";updateAuthMode();$("authModal").classList.add("show")}
+function toggleAuthMode(){authMode=authMode==="login"?"signup":"login";updateAuthMode()}
+function updateAuthMode(){$("authTitle").textContent=authMode==="login"?"Đăng nhập ScriptHub":"Tạo tài khoản ScriptHub";$("authSubmit").textContent=authMode==="login"?"Đăng nhập":"Đăng ký";$("authToggle").textContent=authMode==="login"?"Chưa có tài khoản? Đăng ký":"Đã có tài khoản? Đăng nhập";$("signupFields").classList.toggle("hidden",authMode!=="signup")}
+async function refreshUser(){if(!db)return;const {data:{session:s}}=await db.auth.getSession();session=s;me=null;
+ if(session){const {data,error}=await db.from("profiles").select("*").eq("id",session.user.id).single();if(!error)me= data;}
+ const logged=!!session;$("authButton").classList.toggle("hidden",logged);$("logoutButton").classList.toggle("hidden",!logged);$("userMini").classList.toggle("hidden",!logged);
+ if(logged){$("miniName").textContent=me?.username||session.user.email;$("miniAvatar").src=me?.avatar_url||"";$("miniAvatar").alt=me?.username||"avatar";$("adminNav").classList.toggle("hidden",!me?.is_admin);await updateNoticeBadge()}
+}
+async function signOut(){await db.auth.signOut();session=null;me=null;await refreshUser();toast("Đã đăng xuất.");goPage("feed",document.querySelector('[data-page="feed"]'))}
+$("authForm").addEventListener("submit",async e=>{e.preventDefault();if(!db)return;const f=new FormData(e.target),email=f.get("email").trim(),password=f.get("password");
+ if(authMode==="login"){const {error}=await db.auth.signInWithPassword({email,password});if(error){toast(error.message);return}toast("Đăng nhập thành công!")}
+ else{const username=f.get("username").trim();if(!username){toast("Nhập tên hiển thị nhé.");return}const {data,error}=await db.auth.signUp({email,password,options:{data:{username}}});if(error){toast(error.message);return}if(!data.session){toast("Đăng ký thành công! Hãy kiểm tra email để xác nhận, rồi đăng nhập.");closeModal("authModal");return}toast("Tạo tài khoản thành công!")}
+ closeModal("authModal");e.target.reset();await refreshUser();await loadScripts();});
+async function loadScripts(){if(!db){$("feedGrid").innerHTML='<div class="empty">Chưa kết nối Supabase. Điền cấu hình trong index.html và chạy schema.sql theo README.</div>';return}
+ const {data,error}=await db.from("scripts").select("id,author_id,title,category,description,code,created_at,profiles(username,avatar_url),script_likes(count),comments(count)").order("created_at",{ascending:false});
+ if(error){toast("Không tải được bài đăng: "+error.message);return}scripts=data||[];renderFeed();$("postCount").textContent=scripts.length;$("likeCount").textContent=scripts.reduce((n,p)=>n+(p.script_likes?.[0]?.count||0),0);$("commentCount").textContent=scripts.reduce((n,p)=>n+(p.comments?.[0]?.count||0),0);}
+function card(p){const likes=p.script_likes?.[0]?.count||0,comments=p.comments?.[0]?.count||0;const liked=!!p.liked_by_me;const owner=p.author_id===session?.user?.id;
+ return `<article class="card"><div class="cardtop"><span class="tag">${esc(p.category)}</span><span class="author">${esc(ago(p.created_at))}</span></div><h3>${esc(p.title)}</h3><div class="desc">${esc(p.description||"Chưa có mô tả.")}</div><pre><code>${esc(p.code)}</code></pre><div class="cardfoot"><span class="author">Bởi <b>${esc(p.profiles?.username||"Thành viên")}</b></span><div class="actions"><button class="action" onclick="copyCode('${p.id}')">▣ Copy</button><button class="action" onclick="openComments('${p.id}')">💬 ${comments}</button><button class="action ${liked?"liked":""}" onclick="likeScript('${p.id}')">♥ ${likes}</button>${session&&!owner?`<button class="action" onclick="openReport('${p.id}')">⚑ Báo cáo</button>`:""}${owner?`<button class="action" onclick="editScript('${p.id}')">✎ Sửa</button>`:""}</div></div></article>`}
+async function renderFeed(){let list=[...scripts],q=$("search").value.toLowerCase();list=list.filter(p=>(category==="Tất cả"||p.category===category)&&[p.title,p.description,p.code,p.profiles?.username].join(" ").toLowerCase().includes(q));if($("sort").value==="popular")list.sort((a,b)=>(b.script_likes?.[0]?.count||0)-(a.script_likes?.[0]?.count||0));$("feedCount").textContent=list.length+" kết quả";$("feedGrid").innerHTML=list.length?list.map(card).join(""):'<div class="empty">Chưa có script phù hợp. Hãy đăng bài đầu tiên!</div>'}
+async function copyCode(id){const p=scripts.find(x=>x.id===id);try{await navigator.clipboard.writeText(p.code);toast("Đã copy code!")}catch(e){toast("Không thể copy trên trình duyệt này.")}}
+function openScriptForm(){if(!session){openAuth();toast("Đăng nhập trước khi đăng script.");return}editingScript=null;$("scriptForm").reset();$("scriptModalTitle").textContent="Đăng script mới";$("scriptModal").classList.add("show")}
+function editScript(id){const p=scripts.find(x=>x.id===id);if(!p||p.author_id!==session?.user?.id)return;editingScript=id;const f=$("scriptForm");for(const k of ["title","category","description","code"])f.elements[k].value=p[k]||"";$("scriptModalTitle").textContent="Chỉnh sửa script";$("scriptModal").classList.add("show")}
+$("scriptForm").addEventListener("submit",async e=>{e.preventDefault();const f=new FormData(e.target),item={title:f.get("title").trim(),category:f.get("category"),description:f.get("description").trim(),code:f.get("code")};let res;
+ if(editingScript)res=await db.from("scripts").update(item).eq("id",editingScript).eq("author_id",session.user.id);else res=await db.from("scripts").insert({...item,author_id:session.user.id});
+ if(res.error){toast("Không lưu được: "+res.error.message);return}closeModal("scriptModal");toast(editingScript?"Đã cập nhật script.":"Đăng script thành công!");await loadScripts()});
+async function likeScript(id){if(!session){openAuth();return}const {error}=await db.from("script_likes").insert({script_id:id,user_id:session.user.id});if(error){toast(error.code==="23505"?"Bạn đã thích script này rồi.":error.message);return}await loadScripts()}
+async function openComments(id){if(!session){openAuth();toast("Đăng nhập để xem và bình luận.");return}const p=scripts.find(x=>x.id===id);$("commentsTitle").textContent="Bình luận · "+p.title;$("commentForm").elements.script_id.value=id;const {data,error}=await db.from("comments").select("id,author_id,body,created_at,profiles(username)").eq("script_id",id).order("created_at");if(error){toast(error.message);return}
+ $("commentsList").innerHTML=data.length?data.map(c=>`<div class="notice"><b>${esc(c.profiles?.username||"Thành viên")}</b><small> · ${esc(ago(c.created_at))}</small><p>${esc(c.body)}</p></div>`).join(""):'<p class="muted">Chưa có bình luận. Hãy bắt đầu cuộc trò chuyện!</p>';$("commentsModal").classList.add("show")}
+$("commentForm").addEventListener("submit",async e=>{e.preventDefault();const f=new FormData(e.target),id=f.get("script_id"),body=f.get("body").trim();const {error}=await db.from("comments").insert({script_id:id,author_id:session.user.id,body});if(error){toast(error.message);return}e.target.elements.body.value="";toast("Đã gửi bình luận!");await openComments(id);await loadScripts()});
+function openReport(id){if(!session){openAuth();return}$("reportForm").reset();$("reportForm").elements.script_id.value=id;$("reportModal").classList.add("show")}
+$("reportForm").addEventListener("submit",async e=>{e.preventDefault();const f=new FormData(e.target),{error}=await db.from("reports").insert({script_id:f.get("script_id"),reporter_id:session.user.id,reason:f.get("reason"),details:f.get("details").trim()});if(error){toast(error.code==="23505"?"Bạn đã báo cáo bài này rồi.":error.message);return}closeModal("reportModal");toast("Đã gửi báo cáo. Cảm ơn bạn!");});
+async function renderLeaderboard(){const list=[...scripts].sort((a,b)=>(b.script_likes?.[0]?.count||0)-(a.script_likes?.[0]?.count||0)).slice(0,20);$("leaderboardBox").innerHTML=list.length?list.map((p,i)=>`<div class="listrow"><div class="listleft"><span class="rank">#${i+1}</span><div class="listtitle"><b>${esc(p.title)}</b><small>${esc(p.profiles?.username||"Thành viên")} · ${esc(p.category)}</small></div></div><span>♥ ${p.script_likes?.[0]?.count||0}</span></div>`).join(""):'<p class="muted">Chưa có dữ liệu xếp hạng.</p>'}
+async function renderProfile(){if(!me){$("profileBox").textContent="Không tải được hồ sơ.";return}const mine=scripts.filter(p=>p.author_id===session.user.id);$("profileBox").innerHTML=`<div class="profile-head">${avatarMarkup(me.avatar_url,me.username)}<div class="profile-meta"><h2>${esc(me.username)}</h2><p>${esc(me.bio||"Chưa có giới thiệu.")}</p><small class="muted">${esc(session.user.email||"")}</small></div></div><div class="two" style="margin-top:17px"><div class="statbox"><b>${mine.length}</b><span>Script đã đăng</span></div><div class="statbox"><b>${mine.reduce((n,p)=>n+(p.script_likes?.[0]?.count||0),0)}</b><span>Lượt thích nhận được</span></div></div>`;$("myScripts").innerHTML=mine.length?mine.map(card).join(""):'<div class="empty">Bạn chưa đăng script nào.</div>'}
+function openProfileEdit(){if(!me)return;const f=$("profileForm");f.elements.username.value=me.username||"";f.elements.bio.value=me.bio||"";f.elements.avatar_url.value=me.avatar_url||"";$("profileModal").classList.add("show")}
+$("profileForm").addEventListener("submit",async e=>{e.preventDefault();const f=new FormData(e.target),item={username:f.get("username").trim(),bio:f.get("bio").trim(),avatar_url:f.get("avatar_url").trim()||null};const {error}=await db.from("profiles").update(item).eq("id",session.user.id);if(error){toast(error.message);return}closeModal("profileModal");await refreshUser();await renderProfile();toast("Đã cập nhật hồ sơ!")});
+async function updateNoticeBadge(){if(!session)return;const {count}=await db.from("notifications").select("*",{count:"exact",head:true}).eq("user_id",session.user.id).eq("is_read",false);$("noticeBadge").textContent=count?`(${count})`:""}
+async function loadNotifications(){const {data,error}=await db.from("notifications").select("id,message,is_read,created_at,script_id").eq("user_id",session.user.id).order("created_at",{ascending:false}).limit(50);if(error){$("notificationsBox").textContent=error.message;return}
+ $("notificationsBox").innerHTML=data.length?data.map(n=>`<div class="notice ${n.is_read?"":"unread"}"><p>${esc(n.message)}</p><small>${esc(ago(n.created_at))}</small></div>`).join(""):'<p class="muted">Chưa có thông báo nào.</p>';await updateNoticeBadge()}
+async function markAllRead(){const {error}=await db.from("notifications").update({is_read:true}).eq("user_id",session.user.id);if(error){toast(error.message);return}await loadNotifications();toast("Đã đánh dấu đã đọc.")}
+async function loadAdmin(){if(!me?.is_admin)return;const [{count:pc},{data:reports,error:re},{data:all,error:ae}]=await Promise.all([db.from("scripts").select("*",{count:"exact",head:true}),db.from("reports").select("id,script_id,reason,details,created_at,scripts(title)").eq("status","pending").order("created_at",{ascending:false}),db.from("scripts").select("id,title,author_id,created_at,profiles(username)").order("created_at",{ascending:false}).limit(100)]);
+ $("adminPosts").textContent=pc||0;$("adminReports").textContent=reports?.length||0;
+ $("reportsBox").innerHTML=re?`<p>${esc(re.message)}</p>`:reports.length?reports.map(r=>`<div class="listrow"><div class="listtitle"><b>${esc(r.scripts?.title||"Bài đã bị xóa")}</b><small>${esc(r.reason)} · ${esc(r.details||"Không có mô tả")}</small></div><div class="actions"><button class="btn small ghost" onclick="resolveReport('${r.id}','reviewed')">Đã xử lý</button><button class="btn small danger" onclick="adminDeleteScript('${r.script_id}','${r.id}')">Xóa bài</button></div></div>`).join(""):'<p class="muted">Không có báo cáo đang chờ.</p>';
+ $("adminScripts").innerHTML=ae?`<p>${esc(ae.message)}</p>`:all.map(p=>`<div class="listrow"><div class="listtitle"><b>${esc(p.title)}</b><small>${esc(p.profiles?.username||"Thành viên")}</small></div><button class="btn small danger" onclick="adminDeleteScript('${p.id}')">Xóa</button></div>`).join("")}
+async function resolveReport(id,status){const {error}=await db.from("reports").update({status}).eq("id",id);if(error){toast(error.message);return}await loadAdmin()}
+async function adminDeleteScript(id,reportId){if(!confirm("Bạn chắc chắn muốn xóa bài đăng này?"))return;const {error}=await db.from("scripts").delete().eq("id",id);if(error){toast(error.message);return}if(reportId)await resolveReport(reportId,"resolved");toast("Đã xóa bài đăng.");await loadScripts();await loadAdmin()}
+async function init(){if(!db){toast("Hãy cấu hình Supabase trong index.html để bật website.");return}await refreshUser();await loadScripts();db.auth.onAuthStateChange(async()=>{await refreshUser();await loadScripts()});if(session){noticeTimer=setInterval(updateNoticeBadge,60000)}}
+init();
+</script>
+</body></html>
